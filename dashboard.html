@@ -106,6 +106,13 @@ import {
 }
 from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
+import {
+    getFirestore,
+    collection,
+    onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
 const firebaseConfig = {
 
   apiKey: "AIzaSyBOixYPnsgWobRhmxibgdjjRPtz1ILEMjs",
@@ -123,6 +130,9 @@ const app =
 const auth =
     getAuth(app);
 
+const db =
+    getFirestore(app);
+
 onAuthStateChanged(auth, (user)=>{
 
     if(!user){
@@ -133,12 +143,57 @@ onAuthStateChanged(auth, (user)=>{
         return;
     }
 
-    console.log(
-        "Logged in as:",
-        user.email
-    );
+    loadDevices();
 
 });
+
+function loadDevices(){
+
+    const devicesDiv =
+        document.getElementById(
+            "devices"
+        );
+
+    onSnapshot(
+        collection(db, "devices"),
+        (snapshot)=>{
+
+            devicesDiv.innerHTML = "";
+
+            snapshot.forEach((doc)=>{
+
+                const data = doc.data();
+
+                devicesDiv.innerHTML += `
+
+                <div class="device">
+
+                    <h3>
+                        ${data.deviceName}
+                    </h3>
+
+                    <p>
+                        Email:
+                        ${data.email}
+                    </p>
+
+                    <p>
+                        Website:
+                        ${data.currentSite}
+                    </p>
+
+                    <p class="status">
+                        ${data.status}
+                    </p>
+
+                </div>
+
+                `;
+            });
+
+        }
+    );
+}
 
 window.logout = async function(){
 
