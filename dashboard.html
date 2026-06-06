@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - BrowserGuardian</title>
+
+    <style>
+        body{
+            margin:0;
+            background:#111;
+            color:white;
+            font-family:Arial;
+        }
+
+        .topbar{
+            background:#1a1a1a;
+            padding:20px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .title{
+            font-size:28px;
+            font-weight:bold;
+        }
+
+        button{
+            background:#ff6b00;
+            border:none;
+            color:white;
+            padding:12px 20px;
+            border-radius:10px;
+            cursor:pointer;
+        }
+
+        .main{
+            padding:30px;
+        }
+
+        .card{
+            background:#1d1d1d;
+            padding:25px;
+            border-radius:20px;
+            margin-top:20px;
+        }
+
+        .deviceBox{
+            margin-top:20px;
+            display:grid;
+            grid-template-columns:
+                repeat(auto-fill,minmax(300px,1fr));
+            gap:20px;
+        }
+
+        .device{
+            background:#202020;
+            border-radius:20px;
+            padding:20px;
+        }
+
+        .status{
+            color:lime;
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="title">
+        BrowserGuardian
+    </div>
+
+    <button onclick="logout()">
+        Logout
+    </button>
+</div>
+
+<div class="main">
+
+    <div class="card">
+        <h2>Connected Devices</h2>
+
+        <div class="deviceBox" id="devices">
+
+            <div class="device">
+                <h3>No devices connected</h3>
+                <p class="status">
+                    Waiting for extension...
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+}
+from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyBOixYPnsgWobRhmxibgdjjRPtz1ILEMjs",
+  authDomain: "browserguardian-c2ac8.firebaseapp.com",
+  projectId: "browserguardian-c2ac8",
+  storageBucket: "browserguardian-c2ac8.firebasestorage.app",
+  messagingSenderId: "361303818022",
+  appId: "1:361303818022:web:aab475c9f7faeefd674be7"
+
+};
+
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+onAuthStateChanged(auth, (user)=>{
+
+    if(!user){
+
+        location.href =
+            "login.html";
+
+        return;
+    }
+
+    console.log(
+        "Logged in as:",
+        user.email
+    );
+
+});
+
+window.logout = async function(){
+
+    await signOut(auth);
+
+    location.href =
+        "login.html";
+}
+
+</script>
+
+</body>
+</html>
